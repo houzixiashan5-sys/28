@@ -196,7 +196,7 @@
                     />
                     <div class="user-info">
                       <div class="username">{{ item.nickname }}</div>
-                      <div class="block-info">{{ item.issue }} {{ $t("qukuai") }}</div>
+                     <!-- <div class="block-info">{{ item.issue }} {{ $t("qukuai") }}</div>-->
                     </div>
                   </div>
                   <div class="bet-details">
@@ -204,7 +204,7 @@
                       <span class="bet-type">{{ $t(item.play_method) }}</span>
                       <span class="bet-amount">{{ item.quantity }}U</span>
                     </div>
-                    <div class="bet-row">
+                  <!--  <div class="bet-row">
                       <span class="bet-type">{{ $t("duizi") }}</span>
                       <span class="bet-amount">{{ Math.floor(item.quantity * 0.3) }}U</span>
                     </div>
@@ -218,7 +218,7 @@
                     </div>
                     <div class="bet-summary">
                       <span class="summary-text">{{ $t("zhudan") }} 4 {{ $t("tiao") }}, {{ $t("zongji") }}: {{ item.quantity }}U</span>
-                    </div>
+                    </div>-->
                   </div>
                   <div class="follow-button" @click="showFollowPayFun(item)">
                     {{ $t("gengou") }}
@@ -343,14 +343,28 @@
       <div class="trend-chart-modal" @click.stop>
         <div class="trend-chart-header">
           <div class="trend-tabs">
-            <div class="trend-tab active">数据分析</div>
+            <div 
+              class="trend-tab" 
+              :class="{ active: activeTrendTab === 'data' }"
+              @click="switchTrendTab('data')"
+            >
+              数据分析
+            </div>
+            <div 
+              class="trend-tab" 
+              :class="{ active: activeTrendTab === 'results' }"
+              @click="switchTrendTab('results')"
+            >
+              开奖结果
+            </div>
           </div>
           <div class="trend-close" @click="closeTrendChart">
             <van-icon name="cross" color="#FFD700" size="20px" />
           </div>
         </div>
         <div class="trend-chart-content">
-          <div class="trend-table">
+          <!-- 数据分析tab内容 -->
+          <div v-if="activeTrendTab === 'data'" class="trend-table">
             <div class="trend-table-header">
               <div class="trend-th">期号</div>
               <div class="trend-th">值</div>
@@ -388,6 +402,33 @@
                 </div>
                 <div class="trend-td">
                   <span v-if="item.code <= 13 && item.code % 2 === 0">小双</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 开奖结果tab内容 -->
+          <div v-if="activeTrendTab === 'results'" class="lottery-results">
+            <div class="results-container">
+              <div 
+                class="result-item" 
+                v-for="(item, index) in lotteryResults" 
+                :key="index"
+              >
+                <div class="result-header">
+                  <span class="issue-number">{{ $t("di") }}{{ item.issue }}{{ $t("lun") }}</span>
+                </div>
+                <div class="result-content">
+                  <div class="ball ball-orange">{{ item.site_1 }}</div>
+                  <span class="operator">+</span>
+                  <div class="ball ball-orange">{{ item.site_2 }}</div>
+                  <span class="operator">+</span>
+                  <div class="ball ball-orange">{{ item.site_3 }}</div>
+                  <span class="operator">=</span>
+                  <div class="ball ball-orange">{{ item.code }}</div>
+                </div>
+                <div class="result-info">
+                  <span class="result-text">{{ "(" + $t(item.base[0]) + "," + $t(item.base[1]) + ")" }}</span>
                 </div>
               </div>
             </div>
@@ -731,6 +772,8 @@ export default {
       lastIssuePreize: "",
       showTrendChart: false,
       trendData: [],
+      activeTrendTab: 'data',
+      lotteryResults: [],
     };
   },
   watch: {
@@ -1039,6 +1082,7 @@ export default {
     async openTrendChart() {
       console.log('点击走势图按钮');
       await this.loadTrendData();
+      await this.loadLotteryResults();
       this.showTrendChart = true;
     },
     async loadTrendData() {
@@ -1049,12 +1093,23 @@ export default {
           duration: 0,
         });
         const response = await homeApi.issueList(this.game_id);
-        this.trendData = (response.data || []).slice(0, 100); // 只取前10条
+        this.trendData = (response.data || []).slice(0, 100); // 只取前100条
         this.$toast.clear();
       } catch (error) {
         this.$toast.clear();
         this.$toast.fail('加载数据失败');
       }
+    },
+    async loadLotteryResults() {
+      try {
+        const response = await homeApi.issueList(this.game_id);
+        this.lotteryResults = response.data || [];
+      } catch (error) {
+        console.error('加载开奖结果失败:', error);
+      }
+    },
+    switchTrendTab(tab) {
+      this.activeTrendTab = tab;
     },
     closeTrendChart() {
       this.showTrendChart = false;
@@ -3307,12 +3362,12 @@ input:focus {
 
 /* 新的卡片布局样式 */
 .bet-card {
-  background: linear-gradient(135deg, #B22222 0%, #CD5C5C 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
   border-radius: 0.16rem;
   margin-bottom: 0.3rem;
   padding: 0.4rem;
-  box-shadow: 0 8px 32px rgba(178, 34, 34, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(178, 34, 34, 0.15);
+  border: 2px solid rgba(178, 34, 34, 0.3);
   position: relative;
   overflow: hidden;
   animation: cardSlideIn 0.6s ease-out;
@@ -3325,14 +3380,14 @@ input:focus {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(178, 34, 34, 0.05), transparent);
     transition: left 0.5s ease;
   }
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(178, 34, 34, 0.4);
-    border-color: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 12px 40px rgba(178, 34, 34, 0.25);
+    border-color: rgba(178, 34, 34, 0.5);
 
     &::before {
       left: 100%;
@@ -3362,7 +3417,7 @@ input:focus {
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 50%;
-  border: 2px solid rgba(255, 215, 0, 0.3);
+  border: 2px solid rgba(178, 34, 34, 0.3);
   object-fit: cover;
   animation: avatarPulse 2s ease-in-out infinite;
 }
@@ -3382,25 +3437,25 @@ input:focus {
 }
 
 .username {
-  color: #FFD700;
+  color: #B22222;
   font-size: 0.36rem;
   font-weight: 600;
   margin-bottom: 0.1rem;
-  text-shadow: 0 1px 2px rgba(178, 34, 34, 0.5);
+  text-shadow: 0 1px 2px rgba(178, 34, 34, 0.2);
 }
 
 .block-info {
-  color: rgba(255, 215, 0, 0.8);
+  color: #6c757d;
   font-size: 0.28rem;
   font-weight: 400;
 }
 
 .bet-details {
-  background: rgba(255, 215, 0, 0.1);
+  background: rgba(178, 34, 34, 0.05);
   border-radius: 0.12rem;
   padding: 0.3rem;
   margin-bottom: 0.3rem;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(178, 34, 34, 0.15);
 }
 
 .bet-row {
@@ -3418,16 +3473,16 @@ input:focus {
 }
 
 .bet-type {
-  color: #FFD700;
+  color: #495057;
   font-size: 0.32rem;
   font-weight: 500;
 }
 
 .bet-amount {
-  color: #FFD700;
+  color: #B22222;
   font-size: 0.32rem;
   font-weight: 600;
-  text-shadow: 0 1px 2px rgba(178, 34, 34, 0.5);
+  text-shadow: 0 1px 2px rgba(178, 34, 34, 0.2);
 }
 
 .bet-summary {
@@ -3436,14 +3491,14 @@ input:focus {
 }
 
 .summary-text {
-  color: rgba(255, 215, 0, 0.8);
+  color: #6c757d;
   font-size: 0.28rem;
   font-weight: 400;
 }
 
 .follow-button {
-  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
-  color: #8B0000;
+  background: linear-gradient(135deg, #B22222 0%, #CD5C5C 100%);
+  color: #FFD700;
   border: none;
   border-radius: 0.08rem;
   padding: 0.2rem 0.4rem;
@@ -3451,14 +3506,14 @@ input:focus {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(178, 34, 34, 0.3);
   text-align: center;
   width: 100%;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-    background: linear-gradient(135deg, #ffed4e 0%, #ffb347 100%);
+    box-shadow: 0 6px 20px rgba(178, 34, 34, 0.4);
+    background: linear-gradient(135deg, #CD5C5C 0%, #B22222 100%);
   }
 
   &:active {
@@ -3763,6 +3818,163 @@ input:focus {
 }
 
 .trend-table-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+/* 开奖结果样式 */
+.lottery-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.2rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.result-item {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
+  border-radius: 0.16rem;
+  padding: 0.4rem;
+  border: 1px solid rgba(178, 34, 34, 0.2);
+  box-shadow: 0 4px 16px rgba(178, 34, 34, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  animation: resultSlideIn 0.6s ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(178, 34, 34, 0.2);
+    border-color: rgba(255, 215, 0, 0.3);
+
+    &::before {
+      left: 100%;
+    }
+  }
+}
+
+@keyframes resultSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-header {
+  margin-bottom: 0.3rem;
+  text-align: center;
+}
+
+.issue-number {
+  color: #B22222;
+  font-size: 0.32rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(178, 34, 34, 0.2);
+}
+
+.result-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  margin-bottom: 0.2rem;
+}
+
+.ball {
+  display: inline-block;
+  border-radius: 50%;
+  width: 0.8rem;
+  height: 0.8rem;
+  text-align: center;
+  line-height: 0.8rem;
+  color: #fff;
+  font-size: 0.36rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  animation: ballPulse 2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.ball-orange {
+  background: linear-gradient(135deg, #ffb658 0%, #ff6045 100%);
+  box-shadow: 0 4px 16px rgba(255, 182, 88, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 182, 88, 0.4);
+  }
+}
+
+@keyframes ballPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.operator {
+  color: #B22222;
+  font-size: 0.32rem;
+  font-weight: 600;
+  margin: 0 0.1rem;
+  text-shadow: 0 1px 2px rgba(178, 34, 34, 0.2);
+}
+
+.result-info {
+  text-align: center;
+}
+
+.result-text {
+  color: #6c757d;
+  font-size: 0.28rem;
+  font-weight: 500;
+  background: linear-gradient(135deg, rgba(178, 34, 34, 0.1) 0%, rgba(205, 92, 92, 0.1) 100%);
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.08rem;
+  border: 1px solid rgba(178, 34, 34, 0.2);
+}
+
+/* 开奖结果滚动条样式 */
+.lottery-results::-webkit-scrollbar {
+  width: 4px;
+}
+
+.lottery-results::-webkit-scrollbar-track {
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 2px;
+}
+
+.lottery-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.3);
+  border-radius: 2px;
+}
+
+.lottery-results::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 215, 0, 0.5);
 }
 </style>

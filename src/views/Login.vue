@@ -5,7 +5,7 @@
       <div class="back-btn" @click="changeRouteHome">
         <i class="icon-back"></i> 
       </div>
-      <div class="login-title">登录</div>
+      <div class="login-title">{{ $t("dengluzhanghao") }}</div>
     </div>
 
     <!-- Logo Section -->
@@ -49,8 +49,8 @@
         </button>
 
         <div class="register-link">
-          <span class="no-account">没有账号?</span>
-          <span class="register-text" @click="changeRegister">立即注册</span>
+          <span class="no-account">{{ $t("meiyouzhanghao") }}?</span>
+          <span class="register-text" @click="changeRegister">{{ $t("zhucezhanghao") }}</span>
         </div>
       </div>
     </div>
@@ -176,18 +176,19 @@ export default {
 
 /* Header Section */
 .login-header {
+  height: 12vw;
+  padding: 0 4vw;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 4vw 4vw 2vw;
   position: relative;
   box-sizing: border-box;
+  background-color: #8B0000; // 暗红色背景
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  color: #333;
+  color: #fff; // 白色文字（如有文字）
   font-size: 3.5vw;
   cursor: pointer;
   z-index: 10;
@@ -197,8 +198,8 @@ export default {
   display: inline-block;
   width: 3vw;
   height: 3vw;
-  border-left: 1px solid #333;
-  border-bottom: 1px solid #333;
+  border-left: 1px solid #fff; // 白色边线
+  border-bottom: 1px solid #fff; // 白色边线
   transform: rotate(45deg);
   margin-right: 1vw;
 }
@@ -209,7 +210,7 @@ export default {
   transform: translateX(-50%);
   font-size: 4.5vw;
   font-weight: 500;
-  color: #333;
+  color: #fff; // 登录文字设为白色
 }
 
 /* Logo Section */

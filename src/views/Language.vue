@@ -17,7 +17,7 @@
         <div class="form-container">
           <div class="form-header">
             <div class="form-icon">
-              <img src="@/assets/image/luang.svg" alt="language" />
+              <img src="@/assets/image/yuyan1.png" alt="language" />
             </div>
             <h3 class="form-title">{{ $t("yuyanshezhi") }}</h3>
             <p class="form-subtitle">{{ $t("pianhaoyuyan") }}</p>
@@ -31,7 +31,7 @@
             >
               <div class="lang-info">
                 <div class="lang-icon">
-                  <van-icon name="setting-o" color="#8B0000" size="20px" />
+                  <img src="@/assets/image/yuyan.png" alt="System" />
                 </div>
                 <div class="lang-text">
                   <span class="lang-name">{{ $t("gensuixitong") }}</span>
@@ -50,7 +50,7 @@
             >
               <div class="lang-info">
                 <div class="lang-icon">
-                  <van-icon name="flag-o" color="#8B0000" size="20px" />
+                  <img src="@/assets/image/yyy.png" alt="English Flag" />
                 </div>
                 <div class="lang-text">
                   <span class="lang-name">English</span>
@@ -69,11 +69,11 @@
             >
               <div class="lang-info">
                 <div class="lang-icon">
-                  <van-icon name="flag-o" color="#8B0000" size="20px" />
+                  <img src="@/assets/image/yny.png" alt="Chinese Simplified Flag" />
                 </div>
                 <div class="lang-text">
-                  <span class="lang-name">中文简体</span>
-                  <span class="lang-desc">简体中文</span>
+                  <span class="lang-name">{{ $t("jiantizhongwen") }}</span>
+                  <span class="lang-desc">{{ $t("jiantizhongwen") }}</span>
                 </div>
               </div>
               <div class="lang-check" v-if="show == 1">
@@ -88,7 +88,7 @@
             >
               <div class="lang-info">
                 <div class="lang-icon">
-                  <van-icon name="flag-o" color="#8B0000" size="20px" />
+                  <img src="@/assets/image/fty.png" alt="Chinese Traditional Flag" />
                 </div>
                 <div class="lang-text">
                   <span class="lang-name">中文繁体</span>
@@ -131,11 +131,11 @@ export default {
       } else if (type == 2) {
         localStorage.setItem("locale", "tw");
         localStorage.setItem("localetype", type);
-		this.show = 2;
+        this.show = 2;
       } else if (type == 3) {
         localStorage.setItem("locale", "en");
         localStorage.setItem("localetype", type);
-		this.show = 3;
+        this.show = 3;
       }
       location.reload();
     },
@@ -405,6 +405,14 @@ export default {
   justify-content: center;
   margin-right: 0.3rem;
   animation: iconFloat 3s ease-in-out infinite;
+
+  img {
+    width: 100%; /* 图片撑满容器 */
+    height: 100%;
+    object-fit: contain; /* 保持图片比例 */
+    border-radius: 50%; /* 如果图片是正方形，可以裁剪成圆形 */
+    padding: 0rem; /* 增加内边距，使图片不贴边 */
+  }
 }
 
 @keyframes iconFloat {

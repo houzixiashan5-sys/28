@@ -4,21 +4,11 @@
     <div class="Navbar">
       <div class="g-header">
         <div class="navleft">
-          <div class="app-line" @click="showList = !showList">
-            <span :style="showList ? 'color: #ff7d20;' : ''">{{
-              activeList == 0 ? $t("xianlu") + "1" : $t("xianlu") + "2"
-            }}</span>
-            <van-icon
-              name="arrow-down"
-              color="#fff"
-              size="16px"
-              style="margin: 0.2rem 0 0 0.1rem"
-              :class="showList ? 'angleRotestow' : 'icon-arrow-bottoms'"
-            />
+          <div class="logo-container">
+            <img src="@/assets/image/bg.png" alt="Logo" class="logo-img" />
           </div>
         </div>
         <div class="middle fs-18"></div>
-        <!-- 登录状态下显示金币，未登录状态下显示登录按钮 -->
         <div v-if="isLoggedIn" class="coin-display">
           <img src="@/assets/image/moeny.png" class="coin-icon" alt="coin" />
           <span class="coin-amount">{{ money || '0' }}</span>
@@ -31,15 +21,14 @@
           <span class="login-text">{{ $t("denglu") || "登录" }}</span>
         </div>
         <div class="navright" @click="goToNews">
-          <span>语言</span>
+          <img src="@/assets/image/yuyan1.png" alt="Language" class="language-icon" />
         </div>
       </div>
       <div class="block"></div>
     </div>
     <div class="g-content flex-column">
       <div class="mescroll">
-        <!-- 轮播 -->
-          <div style="padding: 10px 0">
+        <div style="padding: 10px 0">
             <swi-pe></swi-pe>
           </div>
         <div class="broadcast">
@@ -49,7 +38,6 @@
           <div class="c_a0a0a0">{{ $t("dangqianbanben") }}：21.04.02</div>
         </div> 
         
-        <!-- 功能按钮区域 -->
         <div class="function-buttons">
           <div class="function-item" @click="goToGameOdds">
             <div class="function-icon">
@@ -76,55 +64,7 @@
             <span class="function-text">盈利统计</span>
           </div>
         </div>
-        <!-- <div class="cont-head">
-          <div class="cont-left">
-            <div>
-              <div class="en-text">{{ $t("wodezichan") }}</div>
-              <div class="left-text">
-                {{ money ? money : $t("dengluhouchakan") }}
-              </div>
-            </div>
-            <img src="@/assets/image/zichan.png" class="icon" alt="" />
-          </div>
-          <div class="cont-right" @click="changeNews">
-            <div class="huobin">
-              <img src="@/assets/image/touzi.png" class="rightcion" alt="" />
-              <div>{{ $t("touzikuaixun") }}</div>
-            </div>
-          </div>
-        </div> -->
-        <!---横线块无颜色 -->
         <div class="menu-container"></div>
-        <!-- 跑马灯 -->
-        <!-- <div class="prize-news-wrap">
-          <div class="sub-title">
-            <span>{{ $t("jiaoyiyonghu") }}</span>
-            <span>{{ $t("jiaoyipinglei") }}</span>
-            <span>{{ $t("danlunhuoli") }}</span>
-            <span>{{ $t("jiaoyiriqi") }}</span>
-          </div>
-          <div class="prize-news"> 
-            <vue-seamless-scroll
-              class="vux-marquee prize-marquee"
-              :class-option="classOption"
-              :data="infoList"
-            >
-              <ul class="vux-marquee-box">
-                <li
-                  class="prize-marquee-item"
-                  v-for="(item, index) in infoList"
-                  :key="index"
-                >
-                  <span class="name">{{ item.nickname }}</span>
-                  <span class="type">{{ item.game_name }}</span>
-                  <span class="money">{{ item.profit }}</span>
-                  <span class="date">{{time}}</span>
-                </li>
-              </ul>
-            </vue-seamless-scroll>
-          </div>
-        </div> -->
-        <!-- 新组件 -->
         <div class="lottery-container">
           <universal-lottery-card 
             :game-id="7" 
@@ -161,35 +101,7 @@
       </div>
     </div>
     <tab-bar></tab-bar>
-    <!-- 线路遮罩层 -->
-    <van-overlay v-model:show="showList" @click="showList = false">
-      <div class="content">
-        <ul class="line-content">
-          <li class="line-item boderBottom" @click="activechange(0)">
-            <p>{{ $t("xianlu") }}1</p>
-            <img
-              src="@/assets/image/gou.png"
-              class="icon"
-              alt=""
-              v-if="activeList == 0"
-            />
-          </li>
-          <li class="line-item boderBottom" @click="activechange(1)">
-            <p>
-              {{ $t("xianlu") }}2
-              <span style="color: green">({{ $t("zuiyou") }})</span>
-            </p>
-            <img
-              src="@/assets/image/gou.png"
-              class="icon"
-              alt=""
-              v-if="activeList == 1"
-            />
-          </li>
-        </ul>
-      </div>
-    </van-overlay>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -200,7 +112,7 @@ import SwiPe from "@/components/swipe/SwiPe.vue";
 import UniversalLotteryCard from "@/components/lottery/UniversalLotteryCard.vue";
 import homeApi from "@/api/home";
 // import vueSeamlessScroll from "vue-seamless-scroll/src";
-import storeAction from "@/store/typed-actions";
+// import storeAction from "@/store/typed-actions";  // 已移除
 export default {
   name: "Home",
   components: {
@@ -227,17 +139,13 @@ export default {
       console.log(this.$store.state.money);
       return this.$store.state.money;
     },
-    activeList() {
-      console.log(this.$store.state.activeList);
-      return this.$store.state.activeList;
-    },
     isLoggedIn() {
       return !!this.$store.state.token;
     }
   },
   data() {
     return {
-      showList: false,
+      // showList: false, // 已移除
       infoList: [],
       isShow: true,
       texType: localStorage.getItem("localetype"),
@@ -250,16 +158,16 @@ export default {
         path: "/language",
       });
     },
-    activechange(active) {
-      this.$toast.loading({
-        message: this.$t('jiazaizhong'),
-        forbidClick: true,
-        duration: 1000,
-      });
-      storeAction.setCurrentUseractiveList(active);
-      storeAction.setsessionStorage("activeList", active);
-      console.log(active);
-    },
+    // activechange(active) { // 已移除
+    //   this.$toast.loading({
+    //     message: this.$t('jiazaizhong'),
+    //     forbidClick: true,
+    //     duration: 1000,
+    //   });
+    //   storeAction.setCurrentUseractiveList(active);
+    //   storeAction.setsessionStorage("activeList", active);
+    //   console.log(active);
+    // },
     info() {
       this.$toast.loading({
         message: this.$t('jiazaizhong'),
@@ -481,7 +389,7 @@ export default {
   padding: 0.2rem 0.4rem;
   box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2);
   position: absolute;
-  right:.3rem;
+  right:1.3rem;
   top: 50%;
   transform: translateY(-50%);
   z-index: 11;
@@ -634,21 +542,29 @@ export default {
     transform: translateX(0);
   }
 }
-.app-line {
-  padding: 0 0.2rem;
-  animation: fadeInScale 0.6s ease-out;
+
+/* 新增的Logo样式 */
+.logo-container {
+  padding-left: 0.03rem; /* 留出左侧空隙 */
+}
+.logo-img {
+  width: auto;
+  height: 1.1rem; /* 调整 Logo 的高度 */
+  display: block;
 }
 
-@keyframes fadeInScale {
-  0% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
+/* 新增的语言图标样式 */
+.language-icon {
+  width: 0.85rem; /* 调整图标大小 */
+  height: 0.8rem;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.1);
   }
 }
+
 .broadcast {
   min-height: 30px;
   padding: 0.2rem 0.4rem;

@@ -5,7 +5,7 @@
       <div class="back-btn" @click="changeHome">
         <i class="icon-back"></i> 
       </div>
-      <div class="register-title">注册</div>
+      <div class="register-title">{{ $t("zhuce") }}</div>
     </div>
 
     <!-- Logo Section -->
@@ -40,7 +40,7 @@
           <img src="@/assets/image/pwd.png" class="input-icon" alt="" />
           <input 
             type="password" 
-            placeholder="请再次输入密码" 
+            :placeholder= "$t('plquerenmima')"
             v-model="confirmPassword" 
             class="form-input"
           />
@@ -50,7 +50,7 @@
           <img src="@/assets/center/inv.svg" class="input-icon" alt="" />
           <input 
             type="text" 
-            placeholder="请输入邀请码 (选填)" 
+            :placeholder="$t('shuruyaoqingma')" 
             v-model="inviter_id" 
             class="form-input"
           />
@@ -68,13 +68,13 @@
 
         <div class="action-links">
           <div class="login-link">
-            <span class="has-account">已有账号?</span>
-            <span class="login-text" @click="changeLogin">立即登录</span>
+            <span class="has-account">{{ $t("yiyouzhanghao") }}?</span>
+            <span class="login-text" @click="changeLogin">{{ $t("dengluzhanghao") }}</span>
           </div> 
         </div>
 
         <button class="register-button" @click="ChangeRegister">
-          注册
+          {{ $t("zhuce") }}
         </button>
       </div>
     </div>
@@ -117,14 +117,14 @@ export default {
       } else if (!this.password) {
         this.$toast(this.$t('plpassword'));
       } else if (!this.confirmPassword) {
-        this.$toast('请再次输入密码');
+        this.$toast(this.$t('plquerenmima'));
       } else if (this.password !== this.confirmPassword) {
-        this.$toast('两次输入的密码不一致');
+       this.$toast(this.$t('Tips.buyizhi'));
       } else {
         loginApi
           .register(this.username, this.password, "1", this.inviter_id)
           .then((data) => {
-            console.log(data.data, "注册成功");
+            console.log(data.data, this.$t('wanchengzhuce'));
             storeAction.loginDone(data.data);
           })
           .catch((err) => {
@@ -157,18 +157,19 @@ export default {
 
 /* Header Section */
 .register-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4vw 4vw 2vw;
-  position: relative;
-  box-sizing: border-box;
+ height: 12vw;
+ padding: 0 4vw;
+ display: flex;
+ align-items: center;
+ position: relative;
+ box-sizing: border-box;
+ background-color: #8B0000;// 添加背景色为暗红
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  color: #333;
+  color: #fff; // 修改为白色
   font-size: 3.5vw;
   cursor: pointer;
   z-index: 10;
@@ -178,8 +179,8 @@ export default {
   display: inline-block;
   width: 3vw;
   height: 3vw;
-  border-left: 1px solid #333;
-  border-bottom: 1px solid #333;
+  border-left: 1px solid #fff;  // 改为白色箭头
+  border-bottom: 1px solid #fff; // 改为白色箭头
   transform: rotate(45deg);
   margin-right: 1vw;
 }
@@ -190,7 +191,7 @@ export default {
   transform: translateX(-50%);
   font-size: 4.5vw;
   font-weight: 500;
-  color: #333;
+  color: #fff; // 修改为白色
 }
 
 /* Logo Section */

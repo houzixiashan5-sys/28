@@ -1,4 +1,9 @@
 const tw={
+	pianhaoyuyan:'选择您偏好的语言',
+	gensuixitong1:'跟随系统语言设置',
+	dangqian:'当前',
+	xiadan:'下单',
+	xiaqishijian:'下期开奖时间',
     jiantizhongwen:'繁體中文',
     xianlu:'線路',
     dianwei:'當前點位',
